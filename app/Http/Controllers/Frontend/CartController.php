@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\ProductsAttribute;
+use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -19,7 +20,9 @@ class CartController extends Controller
     }
 
 
-    // Add To Cart Product Details Page
+
+
+    // Add To Cart Product (Details Page)
     public function addtocart(Request $request)
     {
         if ($request->isMethod('post')) {
@@ -79,6 +82,79 @@ class CartController extends Controller
             $cart->quantity = $data['quantity'];
             $cart->save();
             return redirect()->back()->with('message', "Product Added In Cart 😃");
+        }
+    }
+
+
+
+
+    // Update Cart Quantity Usign Ajax
+    public function updateCartItemQty(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->all();
+
+            // Get Cart Details
+            $cartDetails = Cart::find($data['cartid']);
+            // Get Avaibale Product Stock
+            $availableStock = ProductsAttribute::select('stock')->where([
+                'product_id' => $cartDetails['product_id'], 'size' => $cartDetails['size']
+            ])->first()->toArray();
+
+
+
+
+            // Check Stock Is Avaibale Or Not
+            if ($data['qty'] > $availableStock['stock']) {
+                $userCartItems = Cart::userCartItems();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Product Stock Is Not Avaiable',
+                    'view' => (string)View::make('frontend.ajax_cart_items')->with(compact('userCartItems'))
+                ]);
+            }
+
+
+
+            // Check Size Avaiable Or Not (Not Requered This Check :))
+            $availableSize = ProductsAttribute::where([
+                'product_id' => $cartDetails['product_id'],
+                'size' => $cartDetails['size'],
+                'status' => 1,
+            ])->count();
+
+            if ($availableSize == 0) {
+                $userCartItems = Cart::userCartItems();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Product Size Is Not Avaiable',
+                    'view' => (string)View::make('frontend.ajax_cart_items')->with(compact('userCartItems'))
+                ]);
+            }
+
+            Cart::where('id', $data['cartid'])->update([
+                'quantity' => $data['qty'],
+            ]);
+            $userCartItems = Cart::userCartItems();
+            return response()->json([
+                'status' => true,
+                'view' => (string)View::make('frontend.ajax_cart_items')->with(compact('userCartItems'))
+            ]);
+        }
+    }
+
+
+
+    // Delete Cart Item Usign Ajax
+    public function deleteCartItem(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->all();
+            Cart::where('id', $data['cartid'])->delete();
+            $userCartItems = Cart::userCartItems();
+            return response()->json([
+                'view' => (string)View::make('frontend.ajax_cart_items')->with(compact('userCartItems'))
+            ]);
         }
     }
 }

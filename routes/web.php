@@ -40,6 +40,12 @@ Route::post('/get-product-price', [App\Http\Controllers\Frontend\ProductControll
 // Add To Cart
 Route::post('/add-to-cart', [App\Http\Controllers\Frontend\CartController::class, 'addtocart']);
 
+// Update Cart Quantity Usign Ajax
+Route::post('/update-cart-item-qty', [App\Http\Controllers\Frontend\CartController::class, 'updateCartItemQty']);
+
+// Delete Cart Item Usign Ajax
+Route::post('/delete-cart-item', [App\Http\Controllers\Frontend\CartController::class, 'deleteCartItem']);
+
 
 
 

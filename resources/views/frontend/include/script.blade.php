@@ -9,12 +9,15 @@
  <script src="{{ asset('frontend/assets/js/jquery.rateit.min.js') }}"></script>
  <script src="{{ asset('frontend/assets/js/lightbox.min.js') }}"></script>
  <script src="{{ asset('frontend/assets/js/bootstrap-select.min.js') }}"></script>
- 
+
  <!------------ Toastr Message---------->
-<script src="{{ asset('admin/assets/toastr/toastr.min.js') }}"></script>
+ <script src="{{ asset('admin/assets/toastr/toastr.min.js') }}"></script>
 
  <!-------------------- Change Size To Update Price --------------------->
  <script src="{{ asset('frontend/assets/js/change_size_to_update_price.js') }}"></script>
+
+ <!-------------- Change Cart Quantity Usign Ajax ----------->
+ <script src="{{ asset('frontend/assets/js/change_cart_qty.js') }}"></script>
 
  <script src="{{ asset('frontend/assets/js/wow.min.js') }}"></script>
  <script src="{{ asset('frontend/assets/js/scripts.js') }}"></script>
