@@ -23,7 +23,16 @@ $(document).ready(function () {
                 product_id: product_id,
             },
             success: function (response) {
-                $(".getAttrPrice").html("$ " + response);
+                if (response["discount"] > 0) {
+                    $(".getAttrPrice").html(
+                        "<del>$ " +
+                            response["product_price"] +
+                            "</del> $" +
+                            response["final_price"]
+                    );
+                } else {
+                    $(".getAttrPrice").html("$ " + response["product_price"]);
+                }
             },
             error: function () {
                 alert("ERROR");

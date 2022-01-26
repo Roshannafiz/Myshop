@@ -107,7 +107,6 @@
                                                         <div class="col-sm-6">
                                                             <div class="price-box">
                                                                 <span class="price getAttrPrice">
-                                                                    {{-- $ {{ $productDetails['product_seal_price'] }} --}}
                                                                     <?php $discounted_price = Product::getDiscountedPrice($productDetails['id']); ?>
 
                                                                     @if ($discounted_price > 0)
@@ -120,9 +119,6 @@
                                                                         ${{ $discounted_price }}
                                                                     @endif
                                                                 </span>
-                                                                {{-- <span class="price-strike">
-                                                                    $ {{ $productDetails['product_regular_price'] }}
-                                                                </span> --}}
                                                             </div>
                                                         </div>
 

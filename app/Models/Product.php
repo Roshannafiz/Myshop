@@ -69,6 +69,9 @@ class Product extends Model
     }
 
 
+
+
+
     // Get Product / Category Discopunt Price
     public static function getDiscountedPrice($product_id)
     {
@@ -86,5 +89,37 @@ class Product extends Model
             $discounted_price = 0;
         }
         return $discounted_price;
+    }
+
+
+
+
+
+
+    public static function getDiscountedAttrPrice($product_id, $size)
+    {
+        $proAttrPrice = ProductsAttribute::where(['product_id' => $product_id, 'size' => $size])->first()->toArray();
+        $proDetails = Product::select('product_discount', 'category_id')->where('id', $product_id)->first()->toArray();
+        $catDetails = Category::select('category_discount')->where('id', $proDetails['category_id'])->first()->toArray();
+
+        if ($proDetails['product_discount'] > 0) {
+            // If Product Discount Added In Admnin Panel
+            $final_price = $proAttrPrice['price'] - ($proAttrPrice['price'] * $proDetails['product_discount'] / 100);
+            $discount = $proAttrPrice['price'] - $final_price;
+            //  Seal Price = Cost Price - Discount Price
+            //  400        = 500 - (500*10/100 = 50)
+        } elseif ($catDetails['category_discount'] > 0) {
+            // If Product Discout Is Not Added And Cataegory Discount In Added In Admin Panel
+            $final_price = $proAttrPrice['price'] - ($proAttrPrice['price'] * $catDetails['category_discount'] / 100);
+            $discount = $proAttrPrice['price'] - $final_price;
+        } else {
+            $final_price = $proAttrPrice['price'];
+            $discount = 0;
+        }
+        return array(
+            'product_price' => $proAttrPrice['price'],
+            'final_price' => $final_price,
+            'discount' => $discount,
+        );
     }
 }

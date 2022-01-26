@@ -1,4 +1,4 @@
-<?php use App\Models\Cart; ?>
+<?php use App\Models\Product; ?>
 @extends('frontend.Layouts')
 @section('content')
     <div class="body-content outer-top-xs">
@@ -15,7 +15,8 @@
                                         <th class="cart-product-name item">Product Name</th>
                                         <th class="cart-edit item">Edit</th>
                                         <th class="cart-qty item">Quantity</th>
-                                        <th class="cart-sub-total item">Subtotal</th>
+                                        <th class="cart-sub-total item">Price</th>
+                                        <th class="cart-discount item">Discount</th>
                                         <th class="cart-total last-item">Grandtotal</th>
                                     </tr>
                                 </thead>
@@ -38,7 +39,7 @@
                                 <tbody>
                                     <?php $total_price = 0; ?>
                                     @foreach ($userCartItems as $userCartItem)
-                                        <?php $attrPrice = Cart::getProductAttrPrice($userCartItem['product_id'], $userCartItem['size']); ?>
+                                        <?php $attrPrice = Product::getDiscountedAttrPrice($userCartItem['product_id'], $userCartItem['size']); ?>
                                         <tr>
                                             <td class="romove-item"><a href="#" title="cancel" class="icon"><i
                                                         class="fa fa-trash-o"></i></a></td>
@@ -83,13 +84,22 @@
                                                     <input type="number" min="1" value="{{ $userCartItem['quantity'] }}">
                                                 </div>
                                             </td>
-                                            <td class="cart-product-sub-total"><span
-                                                    class="cart-sub-total-price">$ {{ $attrPrice }}</span>
+                                            <td class="cart-product-sub-total">
+                                                <span class="cart-sub-total-price">
+                                                    ${{ $attrPrice['product_price'] }}
+                                                </span>
                                             </td>
-                                            <td class="cart-product-grand-total"><span
-                                                    class="cart-grand-total-price">${{ $attrPrice * $userCartItem['quantity'] }}</span></td>
+                                            <td class="cart-product-discount">
+                                                <div class="discount-input">
+                                                    ${{ $attrPrice['discount'] }}
+                                                </div>
+                                            </td>
+                                            <td class="cart-product-grand-total">
+                                                <span class="cart-grand-total-price">
+                                                    ${{ $attrPrice['final_price'] * $userCartItem['quantity'] }}</span>
+                                            </td>
                                         </tr>
-                                        <?php $total_price = $total_price + ($attrPrice * $userCartItem['quantity']); ?>
+                                        <?php $total_price = $total_price + $attrPrice['final_price'] * $userCartItem['quantity']; ?>
                                     @endforeach
                                 </tbody>
                             </table>

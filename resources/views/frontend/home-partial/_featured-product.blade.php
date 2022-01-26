@@ -1,3 +1,4 @@
+<?php use App\Models\Product; ?>
 <!-- ============================================== FEATURED PRODUCTS: START ============================================== -->
 <div class="container">
     <section class="section featured-product wow fadeInUp">
@@ -24,10 +25,18 @@
                                 <div class="rating rateit-small"></div>
                                 <div class="description"></div>
                                 <div class="product-price">
-                                    <span class="price"> ${{ $featuredProduct['product_seal_price'] }} </span>
-                                    <span class="price-before-discount">$800</span>
+                                    <?php $discounted_price = Product::getDiscountedPrice($featuredProduct['id']); ?>
+                                    <!------------- Seal Price --------->
+                                    <span class="price">
+                                        @if ($discounted_price > 0)
+                                            <del>${{ $featuredProduct['product_seal_price'] }}</del>
+                                            <span
+                                                style="color: #59B210; font-size: 17px">${{ $discounted_price }}</span>
+                                        @else
+                                            ${{ $featuredProduct['product_seal_price'] }}
+                                        @endif
+                                    </span>
                                 </div>
-                                <!-- /.product-price -->
                             </div>
                             <!-- /.product-info -->
                             <div class="cart clearfix animate-effect">
